@@ -3,15 +3,28 @@ import CoreRouter from './lib/router'
 const routes = [
   {
     path: '/',
-    template: '<h1>Home</h1>'
+    templateParams: (params) => '<h1>Home</h1>'
   },
   {
     path: '/products',
-    template: '<h1>Products</h1>'
+    templateParams: (params) => '<h1>Products</h1>'
+  },
+  {
+    path: '/satis',
+    templateParams: (params) => '<h1>Satis</h1>'
+
+  },
+  {
+    path: '/:variable',
+    templateParams: (params) => `<h1>${params.variable}</h1>`
+  },
+  {
+    path: '/:variable/:deneme',
+    templateParams: (params) => `<h1>${params.variable + '-' + params.deneme}</h1>`
   },
   {
     path: '*',
-    template: '<h1>404</h1>'
+    templateParams: (params) => '<h1>Products</h1>'
   }
 ]
 

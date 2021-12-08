@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 class CoreRouter {
   constructor (routes) {
     this.routes = routes
@@ -10,12 +11,29 @@ class CoreRouter {
   }
 
   _loadRoute () {
+    const routes = this.routes
     const currentPath = window.location.pathname
-    const findedRoute = this.routes.filter((route) => route.path === currentPath)[0]
-    const finded404 = this.routes.filter((route) => route.path === '*')[0]
 
-    if (findedRoute) this._renderTemplate(findedRoute.template)
-    else this._renderTemplate(finded404.template)
+    // Is there any exact same route
+    const findedRoute = routes.filter((route) => route.path === currentPath)[0]
+    if (findedRoute) {
+      this._renderTemplate(findedRoute.templateParams())
+    } else {
+      // Try to find with dynamic route
+      const finded404 = routes.filter((route) => route.path === '*')[0]
+      const splittedPath = currentPath.split('/')
+      const possibleRoutes = routes.filter((route) => route.path.split('/').length === splittedPath.length && route.path.includes(':'))
+
+      // Setting up params
+      const params = {}
+      const routeParams = possibleRoutes[0].path.split('/').map((params) => params.replace(':', ''))
+      splittedPath.forEach((variable, index) => {
+        params[routeParams[index]] = variable
+      })
+
+      if (possibleRoutes[0]) this._renderTemplate(possibleRoutes[0].templateParams(params))
+      else this._renderTemplate(finded404.templateParams())
+    }
   }
 
   goTo (target, data) {
